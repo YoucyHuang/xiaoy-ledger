@@ -1,0 +1,24 @@
+<!doctype html><html><head><meta charset="utf-8"><style>
+:root{--ink:#1D2A6B;--main:#FFD6E4;--accent:#FFC61A;--blush:#FF8FBA;--mouth:#FF6F8E;--star:#FFFFFF}
+html,body{margin:0;width:512px;height:512px;overflow:hidden;background:#FBF6EA}
+.mascot{position:absolute;left:50%;top:52%;width:calc(380px*var(--k,1));height:calc(460px*var(--k,1));transform:translate(-50%,-50%);overflow:visible}
+.coin{position:absolute;left:0;right:0;bottom:-120px;height:200px;border-radius:50%;background:#FFC61A}
+.mascot .ink { fill:none; stroke:var(--ink); stroke-linecap:round; stroke-linejoin:round }
+.yy-body { fill:var(--main); stroke:var(--ink); stroke-width:18; stroke-linejoin:round }
+.yy-skin { fill:var(--main); stroke:var(--ink); stroke-width:10; stroke-linejoin:round }
+.yy-leg { fill:none; stroke:var(--main); stroke-width:24; stroke-linecap:round }
+.yy-gold { fill:var(--accent); stroke:var(--ink); stroke-width:10; stroke-linejoin:round }
+.yy-dot { fill:var(--accent) }
+.yy-wave { fill:none; stroke:color-mix(in srgb, var(--ink) 55%, transparent); stroke-width:6; stroke-linecap:round }
+.yy-rim { fill:none; stroke:var(--ink); stroke-width:14 }
+.yy-hi { fill:var(--star) } .yy-blush { fill:var(--blush) }
+.yy-nose { fill:var(--blush); stroke:var(--ink); stroke-width:7 }
+.yy-mouth { fill:var(--mouth); stroke:var(--ink); stroke-width:10; stroke-linejoin:round }
+.yy-throat { fill:color-mix(in srgb, var(--mouth) 55%, var(--ink)) }
+.yy-tongue { fill:var(--blush); stroke:var(--ink); stroke-width:8; stroke-linejoin:round }
+</style></head><body><div class="coin"></div>
+<svg class="mascot" viewBox="-330 -770 660 800"><g id="m"></g></svg>
+<script src="../shared.js"></script><script>
+if(location.hash)document.documentElement.style.setProperty('--k',location.hash.slice(1));document.getElementById('m').innerHTML=YY.svg('m');
+YY.set(YY.bind(document.querySelector('.yy')),{x:0,y:0,scale:1,mouth:'tongue',eye:YY.EMO.joy,armL:35,armR:35,lookY:-10,ant:-14});
+</script></body></html>

@@ -178,6 +178,14 @@ dialog::backdrop { background:rgba(29,42,107,.35) }
 dialog#incList { max-height:80vh; overflow:auto }
 @media (prefers-reduced-motion: reduce) { .hole .disk, .hole .swirl, .hole .depth i, .twinkles path { animation:none } }
 
+/* 门（钥匙）+ 试用条 */
+.lock { position:fixed; inset:0; z-index:30; background:var(--bg); display:grid; place-items:center; padding:20px 16px; overflow:auto }
+.lock-box { width:100%; max-width:420px; display:grid; gap:12px; text-align:center; background:var(--card); border:2px solid var(--ink); border-radius:24px; padding:22px 20px }
+.lock-box .mascot { width:96px; height:118px; margin:0 auto }
+.lock-box h1 { font-size:30px }
+.lock-err { color:var(--up); min-height:1em }
+body.trial .wrap::before { content:"试用中 · 这是示例账本，记的账不会保存"; display:block; margin:-18px -16px 12px; padding:8px 12px; text-align:center; font-size:13px; font-weight:700; background:var(--accent); border-bottom:2px solid var(--ink) }
+
 /* mascot (from 小Y 观察册) */
 .mascot .ink { fill:none; stroke:var(--ink); stroke-linecap:round; stroke-linejoin:round }
 .yy-body { fill:var(--main); stroke:var(--ink); stroke-width:18; stroke-linejoin:round }
@@ -364,6 +372,16 @@ dialog#incList { max-height:80vh; overflow:auto }
   </form>
 </dialog>
 
+<dialog id="install">
+  <h2 style="margin:0">门开了</h2>
+  <p class="small muted" style="margin:6px 0 12px">放到手机桌面，以后像 App 一样一点就开，不用再找链接。</p>
+  <div class="card soft" style="margin:0 0 10px; padding:12px 14px"><b class="serif">iPhone</b><p class="small" style="margin:4px 0 0">用 Safari 打开 → 点下方分享按钮 → 「添加到主屏幕」 → 「添加」</p></div>
+  <div class="card soft" style="margin:0 0 12px; padding:12px 14px"><b class="serif">安卓</b><p class="small" style="margin:4px 0 0">点浏览器菜单 → 「添加到主屏幕 / 安装应用」</p></div>
+  <p class="small muted">从桌面图标第一次打开如果又停在门口：把发货链接整条复制，粘贴进去就好，只要一次。</p>
+  <button class="btn" id="installClose">知道了</button>
+</dialog>
+
+<script src="keys.js"></script>
 <script src="shared.js"></script>
 <script>
 // ---------- model ----------
@@ -385,7 +403,7 @@ const KEY = 'xy-ledger-v1';
 
 let S = load() || { v: 1, entries: [], rules: [], mv: {} };
 function load() { try { const v = JSON.parse(localStorage.getItem(KEY)); return v && Array.isArray(v.entries) ? v : null; } catch (e) { return null; } }
-function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+function save() { if (TRIAL) return; try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
 // 上一版分了四种收入来源，这里合并成一种；原来的来源名留在备注里
 (function migrate() {
   let ch = false;
@@ -770,6 +788,82 @@ $$('nav.tabs button').forEach((b) => b.addEventListener('click', () => {
   window.scrollTo(0, 0);
 }));
 
+// ---------- 示例账本（试用 / 截图用） ----------
+function demoData() {
+  const d = { v: 1, entries: [], rules: [], mv: { ETF: 2412, '债券': 508 } }, t = pd(today());
+  const add = (dt, cat, amt, note, extra) => d.entries.push(Object.assign({ id: uid(), date: ds(dt), cat, amt, note }, extra || {}));
+  const meals = [['午饭', 28], ['咖啡', 18], ['晚饭', 42], ['买菜', 56], ['地铁', 6], ['奶茶', 16], ['药', 35], ['新毛衣', 199], ['电影', 45], ['早餐', 9]];
+  const r = { etf: uid(), rent: uid(), ins: uid(), pay: uid() };
+  d.rules = [
+    { id: r.etf, name: '沪深300 ETF 定投', amt: 30, cat: 'inv', sub: 'ETF', freq: 'daily', start: '', lastRun: today(), on: true },
+    { id: r.rent, name: '房租', amt: 3200, cat: 'home', freq: 'monthly', day: '1', start: '', lastRun: today(), on: true },
+    { id: r.ins, name: '医疗险 + 重疾险', amt: 268, cat: 'ins', freq: 'monthly', day: '15', start: '', lastRun: today(), on: true },
+    { id: r.pay, name: '工资', amt: 8000, cat: 'income', freq: 'monthly', day: '10', start: '', lastRun: today(), on: true },
+  ];
+  for (let i = 75; i >= 0; i--) {
+    const dt = new Date(t); dt.setDate(dt.getDate() - i);
+    add(dt, 'inv', 30, '沪深300 ETF 定投', { sub: 'ETF', auto: r.etf });
+    if (dt.getDate() === 1) add(dt, 'home', 3200, '房租', { auto: r.rent });
+    if (dt.getDate() === 15) add(dt, 'ins', 268, '医疗险 + 重疾险', { auto: r.ins });
+    if (dt.getDate() === 10) add(dt, 'income', 8000, '工资', { auto: r.pay });
+    if (dt.getDate() === 22) add(dt, 'income', 600, '稿费');
+    const n = (i * 7) % 3 + 1;
+    for (let j = 0; j < n; j++) { const m = meals[(i * 3 + j * 5) % meals.length]; add(dt, 'life', m[1], m[0]); }
+    if (i === 30) add(dt, 'inv', 500, '债券基金', { sub: '债券' });
+  }
+  d.rules.forEach((x) => (x.start = ds(new Date(t - 75 * 86400000))));
+  return d;
+}
+
+// ---------- 钥匙：小红书自动发货的固定链接 …/xiaoy-ledger/?k=钥匙 ----------
+// 网页里只存「ledger:钥匙」的 SHA-256 指纹（keys.js）。开过一次门，这台设备以后一直开着。
+const LOCK_KEY = 'xy-ledger-unlock', OPENED_KEY = 'xy-ledger-opened';
+let TRIAL = false;
+const KEY_HASHES = window.LEDGER_KEYS || [];
+const cleanKey = (s) => { const m = String(s || '').match(/[?&#]k=([A-Za-z0-9-]+)/); return (m ? m[1] : String(s || '')).trim().toUpperCase().replace(/[\s"'“”「」:：]+/g, ''); };
+async function sha256(s) { const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)); return [...new Uint8Array(b)].map((x) => x.toString(16).padStart(2, '0')).join(''); }
+function unlockedHere() { try { return localStorage.getItem(OPENED_KEY) === '1' || KEY_HASHES.includes(localStorage.getItem(LOCK_KEY)); } catch (e) { return false; } }
+const standalone = matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+async function tryKey(code) {
+  if (!code) return false;
+  const h = await sha256('ledger:' + code);
+  if (!KEY_HASHES.includes(h)) return false;
+  try { localStorage.setItem(LOCK_KEY, h); localStorage.setItem(OPENED_KEY, '1'); } catch (e) {}
+  return true;
+}
+function showLock() {
+  const el = document.createElement('div'); el.className = 'lock';
+  el.innerHTML = `<form class="lock-box">
+    <svg class="mascot" viewBox="-330 -770 660 800" aria-hidden="true"><g></g></svg>
+    <span class="tag">小Y的星球笔记 · 记账</span>
+    <h1>四个篮子</h1>
+    <p class="small muted">在小红书店铺买「四个篮子」后，点发货消息里的链接就能直接打开。<br>从手机桌面图标打开、又停在这里的话：把那条链接<b>整条复制</b>，粘贴到下面。</p>
+    <input class="note" name="code" autocomplete="off" autocapitalize="characters" placeholder="粘贴发货链接">
+    <button class="btn" type="submit">打开</button>
+    <div class="lock-err small"></div>
+    <button class="link" type="button" data-trial>还没买？先用示例账本试试 →</button></form>`;
+  document.body.appendChild(el);
+  const g = el.querySelector('svg g'); g.innerHTML = YY.svg('m'); YY.set(YY.bind(g.querySelector('.yy')), Object.assign({ x: 0, y: 0, scale: 1 }, MOODS.think));
+  const form = el.querySelector('form'), err = el.querySelector('.lock-err');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const code = cleanKey(form.code.value);
+    if (!code) { err.textContent = '先把小红书发货消息里的那条链接，整条粘贴到上面的框里。'; form.code.focus(); return; }
+    if (await tryKey(code)) { el.remove(); welcome(); }
+    else err.textContent = '这条链接打不开，确认一下是小红书发货消息里的完整链接。';
+  });
+  el.querySelector('[data-trial]').addEventListener('click', () => {
+    TRIAL = true; S = demoData(); el.remove();
+    document.body.classList.add('trial'); render(); renderRules();
+  });
+}
+function welcome() {
+  mood('joy', true); setTimeout(() => mood('calm'), 1800);
+  if (!standalone) setTimeout(() => $('install').showModal(), 600);
+  else toast('门开了。记一笔就好，不用记全。');
+}
+$('installClose').addEventListener('click', () => $('install').close());
+
 // ---------- start ----------
 const hr = new Date().getHours();
 $('hello').textContent = (hr < 11 ? '早，' : hr < 18 ? '下午好，' : '晚上好，') + '记一笔就好。';
@@ -777,6 +871,13 @@ mood('calm'); drawBaskets();
 const auto = runRules(); render();
 if (auto) setTimeout(() => toast(`固定记录自动补了 ${auto} 笔`), 400);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) { $('date').max = today(); if (runRules()) render(); } });
+// 门：点发货链接进来自动开；开过一次就不再拦
+(async () => {
+  const urlKey = cleanKey(new URLSearchParams(location.search).get('k') || '');
+  if (unlockedHere()) return;
+  if (urlKey && await tryKey(urlKey)) { welcome(); return; }
+  showLock();
+})();
 if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js').catch(() => {});
 if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
 </script>

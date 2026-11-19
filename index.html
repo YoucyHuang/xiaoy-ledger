@@ -20,7 +20,6 @@
   --ink:#1D2A6B; --main:#FFD6E4; --second:#2B3F8C; --accent:#FFC61A; --blush:#FF8FBA; --mouth:#FF6F8E; --star:#FFFFFF; --lilac:#8C7BE0;
   --bg:#FBF6EA; --card:#FFFFFF; --soft:#F3ECDC; --muted:#6B7095; --line:#E4DCC8;
   --c-life:#FF5FA2; --c-home:#4FA3FF; --c-ins:#A98BEA; --c-inv:#FFC61A;
-  --c-salary:#2FB5A0; --c-side:#4FD69C; --c-yield:#F2A33A; --c-other:#9FB4D8;
   --in:#1E9C86; --out:#1D2A6B;
   --up:#E8434F; --down:#2FA36B;
 }
@@ -89,9 +88,6 @@ p { margin:0 0 10px }
 .stack i { display:block; height:100%; background:var(--c) }
 .big { font-family:"Noto Serif SC", serif; font-size:30px; font-weight:700; line-height:1.2 }
 .big.in { color:var(--in) }
-.flow { display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; margin:12px 0 2px; text-align:center }
-.flow div { border:1.5px solid var(--line); border-radius:12px; padding:6px 2px }
-.flow small { display:block; font-size:12px; color:var(--muted) } .flow b { font-size:15px }
 
 /* list */
 .day { margin:16px 0 4px; display:flex; justify-content:space-between; font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:4px }
@@ -112,8 +108,6 @@ p { margin:0 0 10px }
 .bars { display:flex; align-items:flex-end; gap:5px; height:140px; margin:12px 0 4px; border-bottom:2px solid var(--ink) }
 .bars .col { flex:1; display:flex; flex-direction:column-reverse; min-width:0; border-radius:6px 6px 0 0; overflow:hidden }
 .bars .col i { display:block; background:var(--c) }
-.bars .pair { flex:1; display:flex; align-items:flex-end; gap:2px; height:100%; min-width:0 }
-.bars .pair i { flex:1; display:block; border-radius:4px 4px 0 0; background:var(--c) }
 .bars-x { display:flex; gap:5px; font-size:11px; color:var(--muted); text-align:center } .bars-x span { flex:1 }
 .legend { display:flex; flex-wrap:wrap; gap:12px; font-size:12px; color:var(--muted); margin-top:8px }
 .legend i { display:inline-block; width:10px; height:10px; border-radius:50%; background:var(--c); margin-right:4px; border:1px solid var(--ink) }
@@ -150,9 +144,39 @@ nav.tabs button.on { border-color:var(--ink); background:var(--main); color:var(
 /* toast + sheet */
 .toast { position:fixed; left:50%; bottom:86px; transform:translateX(-50%) translateY(20px); opacity:0; pointer-events:none; background:var(--ink); color:#FBF6EA; border-radius:30px; padding:10px 18px; font-size:14px; display:flex; gap:14px; align-items:center; transition:.2s; z-index:9; max-width:calc(100% - 32px) }
 .toast.show { opacity:1; transform:translateX(-50%); pointer-events:auto }
-.toast button { background:none; border:none; color:var(--accent); font-weight:700; font-size:14px; cursor:pointer; font-family:inherit; padding:0 }
+.toast button { white-space:nowrap; flex:none; background:none; border:none; color:var(--accent); font-weight:700; font-size:14px; cursor:pointer; font-family:inherit; padding:0 }
 dialog { border:2px solid var(--ink); border-radius:22px; padding:18px; max-width:min(440px, calc(100% - 32px)); width:100%; background:var(--bg); color:var(--ink) }
 dialog::backdrop { background:rgba(29,42,107,.35) }
+
+/* 收入页：输入框 → 纵深黑洞 → 总收入 */
+.inbox { display:flex; align-items:center; gap:8px; margin-top:16px; background:var(--card); border:2px solid var(--ink); border-radius:40px; padding:6px 6px 6px 18px }
+.inbox span { font-family:"Noto Serif SC", serif; font-weight:700; font-size:22px; color:var(--in) }
+.inbox input { flex:1; min-width:0; border:none; outline:none; background:transparent; font-size:26px; font-weight:700; color:var(--in); font-family:inherit; font-variant-numeric:tabular-nums; padding:4px 0 }
+.inbox input::placeholder { color:#CFC8B6; font-size:18px; font-weight:600 }
+.inbox button { flex:none; border:2px solid var(--ink); background:var(--accent); color:var(--ink); border-radius:30px; padding:9px 16px; font-family:"Noto Serif SC", serif; font-weight:700; font-size:15px; cursor:pointer }
+.hole-wrap { position:relative; height:250px; display:grid; place-items:center; margin-top:10px }
+.hole { position:relative; width:200px; height:200px; transition:transform .25s }
+.hole > div { position:absolute; border-radius:50% }
+.hole .glow { inset:-26px; background:radial-gradient(circle, rgba(140,123,224,.32) 0%, rgba(255,143,186,.16) 45%, transparent 70%) }
+.hole .disk { inset:0; border:2.5px solid var(--ink); background:conic-gradient(from 0deg, var(--ink), var(--lilac), var(--second), var(--blush), var(--ink), var(--accent), var(--second), var(--ink)); animation:spin 14s linear infinite }
+.hole .swirl { inset:10%; background:repeating-conic-gradient(from 0deg, rgba(10,14,40,.75) 0deg 12deg, rgba(10,14,40,.15) 12deg 45deg); filter:blur(2.5px); -webkit-mask:radial-gradient(circle, #000 55%, transparent 72%); mask:radial-gradient(circle, #000 55%, transparent 72%); animation:spin 5s linear infinite reverse }
+.hole .core { inset:18%; background:radial-gradient(circle, #000 0 34%, #070A1E 50%, rgba(10,14,40,.75) 70%, transparent 100%) }
+.hole .depth { inset:24%; overflow:hidden }
+.hole .depth i { position:absolute; inset:0; border-radius:50%; border:1.5px solid rgba(255,214,228,.45); animation:sink 3.2s linear infinite }
+.hole .depth i:nth-child(2) { animation-delay:-.8s } .hole .depth i:nth-child(3) { animation-delay:-1.6s } .hole .depth i:nth-child(4) { animation-delay:-2.4s }
+.hole.gulp { transform:scale(1.1) }
+.twinkles { position:absolute; inset:0; margin:auto; width:250px; height:250px; pointer-events:none; overflow:visible }
+.twinkles path { fill:var(--accent); stroke:var(--ink); stroke-width:.25; animation:tw 2.4s ease-in-out infinite }
+@keyframes spin { to { transform:rotate(360deg) } }
+@keyframes sink { from { transform:scale(1); opacity:.9 } to { transform:scale(.05); opacity:0 } }
+@keyframes tw { 50% { opacity:.25 } }
+.total { position:relative; z-index:1; text-align:center; background:var(--card); border:2px solid var(--ink); border-radius:20px; padding:14px 16px 16px; margin-top:-6px }
+.total .big { font-size:38px; margin:2px 0 }
+.total.bump .big { animation:bump .5s ease }
+@keyframes bump { 40% { transform:scale(1.08) } }
+.drop { position:fixed; z-index:20; left:0; top:0; pointer-events:none; white-space:nowrap; font-family:"Noto Serif SC", serif; font-weight:700; font-size:20px; color:var(--ink); background:var(--accent); border:2px solid var(--ink); border-radius:30px; padding:4px 14px; box-shadow:0 0 0 4px rgba(255,198,26,.25) }
+dialog#incList { max-height:80vh; overflow:auto }
+@media (prefers-reduced-motion: reduce) { .hole .disk, .hole .swirl, .hole .depth i, .twinkles path { animation:none } }
 
 /* mascot (from 小Y 观察册) */
 .mascot .ink { fill:none; stroke:var(--ink); stroke-linecap:round; stroke-linejoin:round }
@@ -235,25 +259,29 @@ dialog::backdrop { background:rgba(29,42,107,.35) }
 
   <!-- ============ 收入 ============ -->
   <section id="p-inc" class="hide">
-    <div class="card">
-      <div class="month"><button data-step="-1" aria-label="上个月">‹</button><h2 style="margin:0" class="mTitle"></h2><button data-step="1" aria-label="下个月">›</button></div>
-      <div style="margin-top:12px" class="row between"><span class="muted small">这个月进来</span><span class="big in num" id="iTotal"></span></div>
-      <div class="stack" id="iStack"></div>
-      <div class="quad" id="iQuad"></div>
-      <div class="flow" id="iFlow"></div>
-      <p class="small muted" style="margin:10px 0 0" id="iLine"></p>
+    <form class="inbox" id="incForm" autocomplete="off">
+      <span>+¥</span><input id="incAmt" inputmode="decimal" placeholder="进来多少" aria-label="收入金额">
+      <button type="submit">丢进去</button>
+    </form>
+
+    <div class="hole-wrap" aria-hidden="true">
+      <div class="hole" id="hole">
+        <div class="glow"></div>
+        <div class="disk"></div>
+        <div class="swirl"></div>
+        <div class="core"></div>
+        <div class="depth"><i></i><i></i><i></i><i></i></div>
+      </div>
+      <svg class="twinkles" viewBox="-120 -120 240 240"></svg>
     </div>
-    <div id="iList"></div>
-    <div class="card">
-      <div class="row between"><h2 style="margin:0">最近 12 个月 进与出</h2><span class="small muted">单位：月</span></div>
-      <div class="bars" id="iBars"></div>
-      <div class="bars-x lX"></div>
-      <div class="legend"><span><i style="--c:var(--in)"></i>收入</span><span><i style="--c:var(--c-life)"></i>花掉（生活+住房+保险）</span><span><i style="--c:var(--c-inv)"></i>投资</span></div>
+
+    <div class="total">
+      <span class="tag">总收入</span>
+      <div class="big in num" id="incTotal">¥0</div>
+      <div class="small muted" id="incSub">还没有收入记录</div>
     </div>
-    <div class="card">
-      <h2>今年</h2>
-      <div class="kv" id="iKv"></div>
-    </div>
+
+    <button class="btn ghost" id="incAll" style="margin-top:22px">看每一笔收入</button>
   </section>
 
   <!-- ============ 固定 ============ -->
@@ -271,7 +299,7 @@ dialog::backdrop { background:rgba(29,42,107,.35) }
         <label>叫什么<input name="name" id="rName" required placeholder="例：沪深300 ETF 定投" maxlength="24"></label>
         <div class="two">
           <label>每次多少 ¥<input name="amt" id="rAmt" inputmode="decimal" required placeholder="30"></label>
-          <label><span id="rCatLabel">放进哪个篮子</span><select name="cat" id="rCat"></select></label>
+          <label id="rCatWrap">放进哪个篮子<select name="cat" id="rCat"></select></label>
         </div>
         <label id="rSubWrap">投资类型<select name="sub" id="rSub"></select></label>
         <div class="two">
@@ -304,6 +332,23 @@ dialog::backdrop { background:rgba(29,42,107,.35) }
 
 <div class="toast" id="toast"><span id="toastMsg"></span><button id="toastUndo">撤销</button></div>
 
+<dialog id="incAsk">
+  <form class="f" method="dialog" id="incAskForm">
+    <span class="tag">要丢进去的是</span>
+    <div class="big in num" id="incAskAmt"></div>
+    <label>要写一句备注吗？<input name="note" id="incNote" maxlength="40" placeholder="比如：十一月工资（可以不写）"></label>
+    <button class="btn" value="note">带上备注存</button>
+    <button class="btn ghost" value="plain" formnovalidate>只存数额</button>
+    <div style="text-align:center"><button class="link" value="cancel" formnovalidate>算了</button></div>
+  </form>
+</dialog>
+
+<dialog id="incList">
+  <div class="row between"><h2 style="margin:0">每一笔收入</h2><button class="link" id="incListClose">关上</button></div>
+  <p class="small muted" style="margin:4px 0 0">点一笔可以改或删。</p>
+  <div id="incListBody"></div>
+</dialog>
+
 <dialog id="edit">
   <form class="f" method="dialog" id="editForm">
     <h2 style="margin:0">改一笔</h2>
@@ -328,14 +373,11 @@ const OUT = {
   ins:  { name: '保险', c: 'var(--c-ins)',  hint: '医疗 重疾 意外 寿险' },
   inv:  { name: '投资', c: 'var(--c-inv)',  hint: 'ETF 基金 债券 股票' },
 };
-const INC = {
-  salary: { name: '工资', c: 'var(--c-salary)', hint: '到手工资 奖金 补贴' },
-  side:   { name: '副业', c: 'var(--c-side)',   hint: '接单 稿费 兼职 卖货' },
-  yield:  { name: '理财收益', c: 'var(--c-yield)', hint: '分红 利息 卖出赚的' },
-  other:  { name: '其他', c: 'var(--c-other)',  hint: '红包 退款 报销' },
-};
+// 收入只记总数，不分来源
+const INC = { income: { name: '收入', c: 'var(--in)', hint: '工资 副业 红包 都算，丢进来就好' } };
+const OLD_INC = { salary: '工资', side: '副业', yield: '理财收益', other: '其他' };
 const CATS = Object.assign({}, OUT, INC);
-const CK = Object.keys(OUT), IK = Object.keys(INC);
+const CK = Object.keys(OUT);
 const isIn = (e) => e.cat in INC;
 const SUBS = ['ETF', '基金', '债券', '股票', '存款理财', '其他'];
 const WEEK = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
@@ -344,6 +386,13 @@ const KEY = 'xy-ledger-v1';
 let S = load() || { v: 1, entries: [], rules: [], mv: {} };
 function load() { try { const v = JSON.parse(localStorage.getItem(KEY)); return v && Array.isArray(v.entries) ? v : null; } catch (e) { return null; } }
 function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+// 上一版分了四种收入来源，这里合并成一种；原来的来源名留在备注里
+(function migrate() {
+  let ch = false;
+  S.entries.forEach((e) => { if (e.cat in OLD_INC) { if (!e.note) e.note = OLD_INC[e.cat]; e.cat = 'income'; ch = true; } });
+  S.rules.forEach((r) => { if (r.cat in OLD_INC) { r.cat = 'income'; ch = true; } });
+  if (ch) save();
+})();
 
 const $ = (id) => document.getElementById(id);
 const $$ = (s) => Array.from(document.querySelectorAll(s));
@@ -407,10 +456,10 @@ let addMode = 'out', pickSub = 'ETF', lastAdded = null, invArmed = false;
 function setSeg(seg, m) { seg.querySelectorAll('button').forEach((b) => b.classList.toggle('on', b.dataset.m === m)); }
 function drawBaskets() {
   const set = addMode === 'in' ? INC : OUT;
-  $('baskets').innerHTML = Object.keys(set).map((k) => `<button class="basket" data-k="${k}" style="--c:${set[k].c}"><b>${set[k].name}</b><small>${set[k].hint}</small></button>`).join('');
+  $('baskets').innerHTML = Object.keys(set).map((k) => `<button class="basket" data-k="${k}" style="--c:${set[k].c}${addMode === 'in' ? ';grid-column:span 2' : ''}"><b>${addMode === 'in' ? '存进收入' : set[k].name}</b><small>${set[k].hint}</small></button>`).join('');
   $('addCard').classList.toggle('in-mode', addMode === 'in');
   $('amtSign').textContent = addMode === 'in' ? '+¥' : '¥';
-  $('addHint').textContent = addMode === 'in' ? '输入金额，点它从哪来，就记好了' : '输入金额，点一个篮子，就记好了';
+  $('addHint').textContent = addMode === 'in' ? '收入只记总数。输入金额，点下面就存好了' : '输入金额，点一个篮子，就记好了';
   invArmed = false; $('subs').classList.add('hide');
 }
 $('addSeg').addEventListener('click', (e) => {
@@ -462,7 +511,7 @@ $('toastUndo').addEventListener('click', () => {
 // ---------- list rendering ----------
 function itemHTML(e) {
   const c = CATS[e.cat] || { name: '?', c: 'var(--line)' }, inc = isIn(e);
-  const meta = (inc ? '收入 · ' : '') + c.name + (e.sub ? ' · ' + e.sub : '');
+  const meta = c.name + (e.sub ? ' · ' + e.sub : '');
   return `<div class="item${inc ? ' inc' : ''}" data-id="${e.id}" style="--c:${c.c}"><span class="dot"></span><div class="t"><div>${esc(e.note || c.name + (e.sub ? ' · ' + e.sub : ''))}${e.auto ? '<span class="auto">自动</span>' : ''}</div><small>${esc(meta)}</small></div><span class="a">${inc ? '+' : ''}${fmt(e.amt)}</span></div>`;
 }
 function groupByDay(list, limit) {
@@ -505,15 +554,12 @@ function render() {
   const outs = ml.filter((e) => !isIn(e));
   $('mList').innerHTML = '<div class="card soft">' + (outs.length ? groupByDay(outs, showAllDays ? 0 : 7) : '<div class="empty">这个月还空着。</div>') + '</div>';
 
-  // 收入
-  $('iTotal').textContent = '+' + fmt(ms.inAll); stack($('iStack'), ms, IK, ms.inAll); quad($('iQuad'), ms, IK);
-  const left = ms.inAll - ms.spend - ms.inv;
-  $('iFlow').innerHTML = `<div><small>花掉</small><b class="num">${fmtK(ms.spend)}</b></div><div><small>投进去</small><b class="num">${fmtK(ms.inv)}</b></div><div><small>剩在手里</small><b class="num" style="color:${left < 0 ? 'var(--up)' : 'var(--in)'}">${fmtK(left)}</b></div>`;
-  $('iLine').textContent = ms.inAll
-    ? `收入里 ${pct(ms.spend, ms.inAll)} 花掉了，${pct(ms.inv, ms.inAll)} 变成了投资。` + (left < 0 ? ' 这个月出的比进的多，没关系，看长线。' : '')
-    : '这个月还没记收入。发工资那天记一笔，或者去「固定」设成每月自动记。';
-  const ins = ml.filter(isIn);
-  $('iList').innerHTML = ins.length ? '<div class="card soft">' + groupByDay(ins) + '</div>' : '';
+  // 收入：只有一个总数
+  if (!dropping) showIncTotal(incSum());
+  const ins = S.entries.filter(isIn);
+  const lastIn = ins.reduce((a, e) => (e.date > a ? e.date : a), '');
+  $('incSub').textContent = ins.length ? `共 ${ins.length} 笔 · 最近一笔 ${+lastIn.slice(5, 7)}月${+lastIn.slice(8)}日` : '还没有收入记录。在上面写个数，丢进去试试。';
+  $('incListBody').innerHTML = ins.length ? groupByDay(ins) : '<div class="empty">还没有。</div>';
 
   renderLong(); renderRules();
 }
@@ -532,6 +578,7 @@ function renderLong() {
     [`${yr} 年 生活`, fmtK(ys.life)], [`${yr} 年 住房`, fmtK(ys.home)], [`${yr} 年 保险`, fmtK(ys.ins)], [`${yr} 年 投进去的钱`, fmtK(ys.inv)],
     ['今年投资占流出', pct(ys.inv, ys.all)], ['平均每月生活钱', fmtK(all.life / months)],
     ['住房占“花掉的钱”', pct(ys.home, ys.spend)], ['开始记账以来累计投入', fmtK(all.inv)],
+    ...(ys.inAll ? [[`${yr} 年 收入`, fmtK(ys.inAll)], ['今年收入里存下来的', pct(ys.inAll - ys.spend, ys.inAll)]] : []),
   ].map(([a, b]) => `<span>${a}</span><b>${b}</b>`).join('');
 
   const mk = monthKeys(12), mss = mk.map((k) => sumBy(S.entries.filter((e) => e.date.startsWith(k))));
@@ -540,23 +587,6 @@ function renderLong() {
   const max = Math.max(1, ...mss.map((s) => s.all));
   $('lBars').innerHTML = mss.map((s, i) => `<div class="col" title="${mk[i]} ${fmt(s.all)}" style="height:${(s.all / max) * 100}%">${CK.map((c) => s[c] ? `<i style="--c:${CATS[c].c}; flex:${s[c]}"></i>` : '').join('')}</div>`).join('');
   $('lLegend').innerHTML = CK.map((k) => `<span><i style="--c:${CATS[k].c}"></i>${CATS[k].name}</span>`).join('');
-  // 进与出：三根并排
-  const max2 = Math.max(1, ...mss.map((s) => Math.max(s.inAll, s.spend, s.inv)));
-  const h = (v) => (v / max2) * 100 + '%';
-  $('iBars').innerHTML = mss.map((s, i) => `<div class="pair" title="${mk[i]} 入${fmt(s.inAll)} 花${fmt(s.spend)} 投${fmt(s.inv)}"><i style="--c:var(--in);height:${h(s.inAll)}"></i><i style="--c:var(--c-life);height:${h(s.spend)}"></i><i style="--c:var(--c-inv);height:${h(s.inv)}"></i></div>`).join('');
-
-  // 今年收入
-  // 从今年第一笔收入那个月算起，避免刚开始记账时被前面空着的月份拉低
-  const firstIn = S.entries.filter((e) => isIn(e) && e.date.startsWith(yr)).reduce((a, e) => (e.date < a ? e.date : a), t);
-  const inMonths = +t.slice(5, 7) - +firstIn.slice(5, 7) + 1;
-  $('iKv').innerHTML = [
-    [`${yr} 年 收入`, fmtK(ys.inAll)], ['平均每月收入', fmtK(ys.inAll / inMonths)],
-    ...IK.filter((k) => ys[k]).map((k) => [`　${INC[k].name}`, fmtK(ys[k])]),
-    ['今年存下比例', ys.inAll ? pct(ys.inAll - ys.spend, ys.inAll) : '—'],
-    ['今年收入变成投资', ys.inAll ? pct(ys.inv, ys.inAll) : '—'],
-    ['理财收益 ÷ 累计投入', all.inv ? (((all.yield || 0) / all.inv) * 100).toFixed(1) + '%' : '—'],
-  ].map(([a, b]) => `<span>${a}</span><b>${b}</b>`).join('');
-
   // 持仓
   const p = {}; S.entries.filter((e) => e.cat === 'inv').forEach((e) => { const s = e.sub || '其他'; p[s] = (p[s] || 0) + e.amt; });
   const keys = SUBS.filter((s) => p[s]);
@@ -576,6 +606,68 @@ $('hold').addEventListener('change', (e) => {
   save(); renderLong();
 });
 
+// ---------- 收入页：丢进黑洞 ----------
+let dropping = false, shownTotal = 0;
+const incSum = () => S.entries.filter(isIn).reduce((a, e) => a + e.amt, 0);
+function showIncTotal(v) { shownTotal = v; $('incTotal').textContent = fmt(v); }
+function countTo(v) {
+  const from = shownTotal, t0 = performance.now(), dur = 700;
+  const step = (now) => { const k = Math.min(1, (now - t0) / dur), ease = 1 - Math.pow(1 - k, 3); showIncTotal(k < 1 ? Math.round(from + (v - from) * ease) : v); if (k < 1) requestAnimationFrame(step); else showIncTotal(v); };
+  requestAnimationFrame(step); setTimeout(() => showIncTotal(v), dur + 100);
+  const box = document.querySelector('.total'); box.classList.remove('bump'); void box.offsetWidth; box.classList.add('bump');
+}
+// 黑洞四周的小星星
+$$('.twinkles').forEach((s) => (s.innerHTML = [[-100, -70, 7], [95, -85, 5], [108, 30, 8], [-112, 40, 5], [-60, -108, 4], [70, 100, 5], [-84, 96, 6], [18, -116, 5]]
+  .map(([x, y, k], i) => `<path transform="translate(${x} ${y}) scale(${k})" d="${YY.STAR}" style="animation-delay:${-i * 0.37}s"/>`).join('')));
+
+let pendingInc = null;
+$('incAmt').addEventListener('input', () => { const v = $('incAmt').value.replace(/[^\d.]/g, '').replace(/(\..*)\./g, '$1'); if (v !== $('incAmt').value) $('incAmt').value = v; });
+$('incForm').addEventListener('submit', (e) => {
+  e.preventDefault(); const amt = num($('incAmt').value);
+  if (!amt) { $('incAmt').focus(); toast('先写进来多少'); return; }
+  pendingInc = amt; $('incAskAmt').textContent = '+' + fmt(amt); $('incNote').value = ''; $('incAmt').blur();
+  $('incAsk').showModal();
+});
+// 直接响应按钮（不依赖 dialog 的 close 事件）
+$('incAskForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const v = e.submitter ? e.submitter.value : 'plain'; $('incAsk').close();
+  if (!pendingInc || (v !== 'note' && v !== 'plain')) { pendingInc = null; return; }
+  const amt = pendingInc; pendingInc = null;
+  const entry = { id: uid(), date: today(), cat: 'income', amt, note: v === 'note' ? $('incNote').value.trim() : '' };
+  S.entries.push(entry); save(); lastAdded = entry.id;
+  dropIntoHole(amt);
+});
+function dropIntoHole(amt) {
+  const from = $('incAmt').getBoundingClientRect(), hole = $('hole').getBoundingClientRect();
+  $('incAmt').value = '';
+  const coin = document.createElement('div'); coin.className = 'drop'; coin.textContent = '+' + fmt(amt); document.body.appendChild(coin);
+  const cw = coin.offsetWidth, ch = coin.offsetHeight;
+  const sx = from.left + from.width / 2 - cw / 2, sy = from.top + from.height / 2 - ch / 2;
+  const cx = hole.left + hole.width / 2 - cw / 2, cy = hole.top + hole.height / 2 - ch / 2;
+  let done = false;
+  const finish = () => {
+    if (done) return; done = true;
+    coin.remove(); dropping = false;
+    const h = $('hole'); h.classList.add('gulp'); setTimeout(() => h.classList.remove('gulp'), 260);
+    countTo(incSum()); render();
+    mood('proud', true); setTimeout(() => mood('calm'), 1600);
+    toast(`+${fmt(amt)} 掉进去了`, true);
+  };
+  dropping = true; render();
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches || !coin.animate) { finish(); return; }
+  // 先往下掉，再绕着黑洞转圈被吸进去
+  const dx = sx - cx, dy = sy - cy, r0 = Math.hypot(dx, dy), a0 = Math.atan2(dy, dx), N = 16, frames = [];
+  for (let i = 0; i <= N; i++) {
+    const t = i / N, r = r0 * Math.pow(1 - t, 1.6), a = a0 + t * Math.PI * 2.4 * (t > .25 ? 1 : t * 4);
+    frames.push({ transform: `translate(${cx + Math.cos(a) * r}px, ${cy + Math.sin(a) * r}px) scale(${1 - t * .94}) rotate(${t * 520}deg)`, opacity: t > .85 ? 1 - (t - .85) / .15 : 1 });
+  }
+  coin.animate(frames, { duration: 1300, easing: 'cubic-bezier(.45,0,.8,.4)', fill: 'forwards' }).onfinish = finish;
+  setTimeout(finish, 1800); // 保底：页面切到后台、动画没跑完时也要更新总数
+}
+$('incAll').addEventListener('click', () => $('incList').showModal());
+$('incListClose').addEventListener('click', () => $('incList').close());
+
 // ---------- 固定记录 UI ----------
 const opts = (set) => Object.keys(set).map((k) => `<option value="${k}">${set[k].name}</option>`).join('');
 let ruleMode = 'out';
@@ -584,8 +676,8 @@ $('eCat').innerHTML = `<optgroup label="支出">${opts(OUT)}</optgroup><optgroup
 $('eSub').innerHTML = $('rSub').innerHTML;
 function setRuleMode(m) {
   ruleMode = m; setSeg($('ruleSeg'), m);
-  $('rCat').innerHTML = opts(m === 'in' ? INC : OUT); $('rCat').value = m === 'in' ? 'salary' : 'inv';
-  $('rCatLabel').textContent = m === 'in' ? '从哪来' : '放进哪个篮子';
+  $('rCat').innerHTML = opts(m === 'in' ? INC : OUT); $('rCat').value = m === 'in' ? 'income' : 'inv';
+  $('rCatWrap').classList.toggle('hide', m === 'in');
   $('rName').placeholder = m === 'in' ? '例：每月工资' : '例：沪深300 ETF 定投';
   $('rAmt').placeholder = m === 'in' ? '8000' : '30';
   if (m === 'in') { $('rFreq').value = 'monthly'; } else { $('rFreq').value = 'daily'; }
@@ -615,7 +707,7 @@ $('ruleForm').addEventListener('submit', (e) => {
 function ruleHTML(r) {
   const inc = r.cat in INC, total = S.entries.filter((e) => e.auto === r.id).reduce((a, e) => a + e.amt, 0);
   return `<div class="rule${r.on ? '' : ' off'}${inc ? ' inc' : ''}" style="--c:${CATS[r.cat].c}"><span class="dot"></span>
-    <div class="t"><b>${esc(r.name)}</b> <span class="num">${inc ? '+' : ''}${fmt(r.amt)}</span><small>${freqText(r)} · ${inc ? '收入 · ' : ''}${CATS[r.cat].name}${r.sub ? ' · ' + r.sub : ''} · 已累计 ${fmt(total)}</small></div>
+    <div class="t"><b>${esc(r.name)}</b> <span class="num">${inc ? '+' : ''}${fmt(r.amt)}</span><small>${freqText(r)} · ${CATS[r.cat].name}${r.sub ? ' · ' + r.sub : ''} · 已累计 ${fmt(total)}</small></div>
     <button class="switch${r.on ? ' on' : ''}" data-tog="${r.id}" aria-label="暂停或继续"></button>
     <button class="link" data-del="${r.id}">删</button></div>`;
 }

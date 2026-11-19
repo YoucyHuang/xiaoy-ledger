@@ -1,5 +1,5 @@
 // 小Y记账本 · 离线缓存。改了页面文件后，把 VERSION 加一，手机下次打开会自动更新。
-const VERSION = 'xy-ledger-v2';
+const VERSION = 'xy-ledger-v3';
 const CORE = ['./', './index.html', './shared.js', './manifest.webmanifest',
   './icons/icon-192.png', './icons/icon-512.png', './icons/apple-touch-icon.png', './icons/favicon-32.png'];
 

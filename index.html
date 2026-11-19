@@ -20,6 +20,8 @@
   --ink:#1D2A6B; --main:#FFD6E4; --second:#2B3F8C; --accent:#FFC61A; --blush:#FF8FBA; --mouth:#FF6F8E; --star:#FFFFFF; --lilac:#8C7BE0;
   --bg:#FBF6EA; --card:#FFFFFF; --soft:#F3ECDC; --muted:#6B7095; --line:#E4DCC8;
   --c-life:#FF5FA2; --c-home:#4FA3FF; --c-ins:#A98BEA; --c-inv:#FFC61A;
+  --c-salary:#2FB5A0; --c-side:#4FD69C; --c-yield:#F2A33A; --c-other:#9FB4D8;
+  --in:#1E9C86; --out:#1D2A6B;
   --up:#E8434F; --down:#2FA36B;
 }
 * { box-sizing:border-box }
@@ -41,23 +43,32 @@ p { margin:0 0 10px }
 .link { background:none; border:none; color:var(--muted); font-size:14px; cursor:pointer; padding:4px 0; font-family:inherit; text-decoration:underline; text-underline-offset:3px }
 .hide { display:none !important }
 .row { display:flex; align-items:center; gap:10px } .between { justify-content:space-between }
+.sect { display:flex; align-items:center; gap:10px; margin:26px 0 0; color:var(--muted); font-size:12px; letter-spacing:2px }
+.sect::before, .sect::after { content:""; flex:1; border-top:2px dashed var(--line) }
 
 /* header */
 .top { display:flex; align-items:center; gap:12px }
+.top > div:nth-child(2) { min-width:0 }
 .mascot { width:74px; height:92px; flex:none; overflow:visible }
 .streak { margin-left:auto; text-align:right; white-space:nowrap; flex:none }
-.top > div:nth-child(2) { min-width:0 }
 .streak b { font-family:"Noto Serif SC", serif; font-size:26px; display:block; line-height:1.1 }
+
+/* 收入 / 支出 切换 */
+.seg { display:grid; grid-template-columns:1fr 1fr; border:2px solid var(--ink); border-radius:40px; padding:3px; background:var(--soft); margin-bottom:12px }
+.seg button { border:none; background:none; border-radius:30px; padding:8px 0; font-family:"Noto Serif SC", serif; font-weight:700; font-size:16px; color:var(--muted); cursor:pointer }
+.seg button.on { background:var(--ink); color:#FBF6EA }
+.seg button.on[data-m=in] { background:var(--in) }
 
 /* entry */
 .amt { display:flex; align-items:baseline; gap:6px; border-bottom:2px solid var(--ink); padding:4px 2px 6px; margin:4px 0 12px }
 .amt span { font-family:"Noto Serif SC", serif; font-size:28px; font-weight:700 }
 .amt input { flex:1; min-width:0; border:none; outline:none; background:transparent; font-size:40px; font-weight:700; color:var(--ink); font-family:inherit; font-variant-numeric:tabular-nums; padding:0 }
 .amt input::placeholder { color:#CFC8B6 }
+.in-mode .amt { border-color:var(--in) } .in-mode .amt span, .in-mode .amt input { color:var(--in) }
 .note { width:100%; border:2px solid var(--line); border-radius:12px; padding:9px 12px; font-size:15px; font-family:inherit; color:var(--ink); background:var(--card) }
-.note:focus, .amt:focus-within { border-color:var(--ink) }
+.note:focus { border-color:var(--ink); outline:none }
 .baskets { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px }
-.basket { position:relative; text-align:left; border:2px solid var(--ink); border-radius:18px; padding:12px 14px 12px; background:var(--card); cursor:pointer; font-family:inherit; color:var(--ink); overflow:hidden; transition:transform .12s }
+.basket { position:relative; text-align:left; border:2px solid var(--ink); border-radius:18px; padding:12px 14px; background:var(--card); cursor:pointer; font-family:inherit; color:var(--ink); overflow:hidden; transition:transform .12s }
 .basket:active { transform:scale(.97) }
 .basket::before { content:""; position:absolute; left:0; top:0; bottom:0; width:10px; background:var(--c) }
 .basket b { display:block; font-family:"Noto Serif SC", serif; font-size:20px; padding-left:6px }
@@ -77,23 +88,32 @@ p { margin:0 0 10px }
 .stack { display:flex; height:14px; border-radius:10px; overflow:hidden; border:1.5px solid var(--ink); background:var(--soft); margin:10px 0 4px }
 .stack i { display:block; height:100%; background:var(--c) }
 .big { font-family:"Noto Serif SC", serif; font-size:30px; font-weight:700; line-height:1.2 }
+.big.in { color:var(--in) }
+.flow { display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; margin:12px 0 2px; text-align:center }
+.flow div { border:1.5px solid var(--line); border-radius:12px; padding:6px 2px }
+.flow small { display:block; font-size:12px; color:var(--muted) } .flow b { font-size:15px }
 
 /* list */
 .day { margin:16px 0 4px; display:flex; justify-content:space-between; font-size:13px; color:var(--muted); border-bottom:1px solid var(--line); padding-bottom:4px }
 .item { display:flex; align-items:center; gap:10px; padding:9px 2px; border-bottom:1px dashed var(--line); cursor:pointer }
 .item .dot { width:12px; height:12px; border-radius:50%; background:var(--c); border:1.5px solid var(--ink); flex:none }
+.item.inc .dot { border-radius:3px }
 .item .t { flex:1; min-width:0 } .item .t div { white-space:nowrap; overflow:hidden; text-overflow:ellipsis }
 .item .t small { color:var(--muted); font-size:12px }
 .item .a { font-weight:700; font-variant-numeric:tabular-nums }
+.item.inc .a { color:var(--in) }
 .auto { display:inline-block; font-size:11px; border:1.5px solid var(--ink); border-radius:10px; padding:0 6px; margin-left:4px; background:var(--accent); vertical-align:1px }
 .empty { text-align:center; color:var(--muted); padding:22px 0; font-size:14px }
 .month { display:flex; align-items:center; justify-content:space-between }
 .month button { border:2px solid var(--ink); background:var(--card); width:36px; height:36px; border-radius:50%; font-size:18px; cursor:pointer; color:var(--ink) }
+.month button:disabled { opacity:.3; cursor:default }
 
 /* chart */
 .bars { display:flex; align-items:flex-end; gap:5px; height:140px; margin:12px 0 4px; border-bottom:2px solid var(--ink) }
 .bars .col { flex:1; display:flex; flex-direction:column-reverse; min-width:0; border-radius:6px 6px 0 0; overflow:hidden }
 .bars .col i { display:block; background:var(--c) }
+.bars .pair { flex:1; display:flex; align-items:flex-end; gap:2px; height:100%; min-width:0 }
+.bars .pair i { flex:1; display:block; border-radius:4px 4px 0 0; background:var(--c) }
 .bars-x { display:flex; gap:5px; font-size:11px; color:var(--muted); text-align:center } .bars-x span { flex:1 }
 .legend { display:flex; flex-wrap:wrap; gap:12px; font-size:12px; color:var(--muted); margin-top:8px }
 .legend i { display:inline-block; width:10px; height:10px; border-radius:50%; background:var(--c); margin-right:4px; border:1px solid var(--ink) }
@@ -112,11 +132,14 @@ table.t td.r, table.t th.r { text-align:right }
 .f input:focus, .f select:focus { border-color:var(--ink); outline:none }
 .f .two { display:grid; grid-template-columns:1fr 1fr; gap:10px }
 .rule { display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px dashed var(--line) }
+.rule .dot { width:12px; height:12px; border-radius:50%; background:var(--c); border:1.5px solid var(--ink); flex:none }
+.rule.inc .dot { border-radius:3px } .rule.inc .num { color:var(--in) }
 .rule .t { flex:1 } .rule .t small { display:block; color:var(--muted); font-size:12px }
 .rule.off { opacity:.45 }
 .switch { width:46px; height:26px; border-radius:20px; border:2px solid var(--ink); background:var(--soft); position:relative; cursor:pointer; flex:none; padding:0 }
 .switch::after { content:""; position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%; background:var(--ink); transition:left .15s }
 .switch.on { background:var(--accent) } .switch.on::after { left:22px }
+h3.rh { font-size:14px; color:var(--muted); margin:14px 0 0; letter-spacing:2px }
 
 /* tab bar */
 nav.tabs { position:fixed; left:0; right:0; bottom:0; background:var(--bg); border-top:2px solid var(--ink); padding:8px 8px calc(8px + env(safe-area-inset-bottom)); z-index:5 }
@@ -165,44 +188,42 @@ dialog::backdrop { background:rgba(29,42,107,.35) }
 
   <!-- ============ 记一笔 ============ -->
   <section id="p-add">
-    <div class="card">
-      <div class="row between"><b class="serif">记一笔</b><span class="small muted">输入金额，点一个篮子，就记好了</span></div>
-      <label class="amt"><span>¥</span><input id="amt" inputmode="decimal" placeholder="0" autocomplete="off" aria-label="金额"></label>
+    <div class="card" id="addCard">
+      <div class="seg" id="addSeg"><button data-m="out" class="on">支出</button><button data-m="in">收入</button></div>
+      <label class="amt"><span id="amtSign">¥</span><input id="amt" inputmode="decimal" placeholder="0" autocomplete="off" aria-label="金额"></label>
       <input class="note" id="note" placeholder="写一句是什么（可以不写）" maxlength="40">
+      <div class="small muted" style="margin-top:10px" id="addHint">输入金额，点一个篮子，就记好了</div>
       <div class="baskets" id="baskets"></div>
       <div class="subs hide" id="subs"></div>
       <div class="when">日期 <input type="date" id="date"> <span id="dateHint"></span></div>
     </div>
 
     <div class="card soft">
-      <div class="row between"><h2 style="margin:0">今天</h2><b class="num" id="todayTotal">¥0</b></div>
+      <div class="row between"><h2 style="margin:0">今天</h2><span class="small num" id="todayTotal"></span></div>
       <div id="todayList"></div>
     </div>
   </section>
 
-  <!-- ============ 账本 ============ -->
+  <!-- ============ 账本（月 + 长线） ============ -->
   <section id="p-book" class="hide">
     <div class="card">
-      <div class="month"><button id="mPrev" aria-label="上个月">‹</button><h2 style="margin:0" id="mTitle"></h2><button id="mNext" aria-label="下个月">›</button></div>
+      <div class="month"><button data-step="-1" aria-label="上个月">‹</button><h2 style="margin:0" class="mTitle"></h2><button data-step="1" aria-label="下个月">›</button></div>
       <div style="margin-top:12px" class="row between"><span class="muted small">这个月流出</span><span class="big num" id="mTotal"></span></div>
       <div class="stack" id="mStack"></div>
       <div class="quad" id="mQuad"></div>
       <p class="small muted" style="margin:10px 0 0" id="mLine"></p>
     </div>
     <div id="mList"></div>
-  </section>
 
-  <!-- ============ 长线 ============ -->
-  <section id="p-long" class="hide">
+    <div class="sect">长线视角</div>
     <div class="card">
-      <span class="tag">长线视角</span>
       <h2>钱去了哪里，又变成了什么</h2>
       <div class="kv" id="lKv"></div>
     </div>
     <div class="card">
-      <div class="row between"><h2 style="margin:0">最近 12 个月</h2><span class="small muted">单位：月</span></div>
+      <div class="row between"><h2 style="margin:0">最近 12 个月流出</h2><span class="small muted">单位：月</span></div>
       <div class="bars" id="lBars"></div>
-      <div class="bars-x" id="lX"></div>
+      <div class="bars-x lX"></div>
       <div class="legend" id="lLegend"></div>
     </div>
     <div class="card">
@@ -212,21 +233,45 @@ dialog::backdrop { background:rgba(29,42,107,.35) }
     </div>
   </section>
 
+  <!-- ============ 收入 ============ -->
+  <section id="p-inc" class="hide">
+    <div class="card">
+      <div class="month"><button data-step="-1" aria-label="上个月">‹</button><h2 style="margin:0" class="mTitle"></h2><button data-step="1" aria-label="下个月">›</button></div>
+      <div style="margin-top:12px" class="row between"><span class="muted small">这个月进来</span><span class="big in num" id="iTotal"></span></div>
+      <div class="stack" id="iStack"></div>
+      <div class="quad" id="iQuad"></div>
+      <div class="flow" id="iFlow"></div>
+      <p class="small muted" style="margin:10px 0 0" id="iLine"></p>
+    </div>
+    <div id="iList"></div>
+    <div class="card">
+      <div class="row between"><h2 style="margin:0">最近 12 个月 进与出</h2><span class="small muted">单位：月</span></div>
+      <div class="bars" id="iBars"></div>
+      <div class="bars-x lX"></div>
+      <div class="legend"><span><i style="--c:var(--in)"></i>收入</span><span><i style="--c:var(--c-life)"></i>花掉（生活+住房+保险）</span><span><i style="--c:var(--c-inv)"></i>投资</span></div>
+    </div>
+    <div class="card">
+      <h2>今年</h2>
+      <div class="kv" id="iKv"></div>
+    </div>
+  </section>
+
   <!-- ============ 固定 ============ -->
   <section id="p-fix" class="hide">
     <div class="card">
       <span class="tag">每天 / 每周 / 每月 自动记</span>
       <h2>固定记录</h2>
-      <p class="small muted">定投、房租、保费这种不用你想的钱，设一次，以后打开就自动补记到今天。</p>
+      <p class="small muted">定投、房租、保费、工资这种固定的钱，设一次，以后打开就自动补记到今天。</p>
       <div id="rules"></div>
     </div>
     <div class="card soft">
       <h2>新加一条</h2>
+      <div class="seg" id="ruleSeg"><button data-m="out" class="on">支出</button><button data-m="in">收入</button></div>
       <form class="f" id="ruleForm">
-        <label>叫什么<input name="name" required placeholder="例：沪深300 ETF 定投" maxlength="24"></label>
+        <label>叫什么<input name="name" id="rName" required placeholder="例：沪深300 ETF 定投" maxlength="24"></label>
         <div class="two">
-          <label>每次多少 ¥<input name="amt" inputmode="decimal" required placeholder="30"></label>
-          <label>放进哪个篮子<select name="cat" id="rCat"></select></label>
+          <label>每次多少 ¥<input name="amt" id="rAmt" inputmode="decimal" required placeholder="30"></label>
+          <label><span id="rCatLabel">放进哪个篮子</span><select name="cat" id="rCat"></select></label>
         </div>
         <label id="rSubWrap">投资类型<select name="sub" id="rSub"></select></label>
         <div class="two">
@@ -240,11 +285,7 @@ dialog::backdrop { background:rgba(29,42,107,.35) }
       </form>
     </div>
     <div class="card">
-      <h2>设置</h2>
-      <form class="f" id="setForm">
-        <label>每月到手收入 ¥（可不填；填了能看结余和投资率）<input name="income" id="income" inputmode="decimal" placeholder="不填也行"></label>
-      </form>
-      <h3>数据</h3>
+      <h2>数据</h2>
       <p class="small muted">账本只存在这台设备的浏览器里，不上传。换手机或清浏览器前，记得导出备份。</p>
       <div class="row" style="flex-wrap:wrap; gap:8px">
         <button class="btn small" id="expJson">导出备份</button>
@@ -258,7 +299,7 @@ dialog::backdrop { background:rgba(29,42,107,.35) }
 </div>
 
 <nav class="tabs"><div class="in">
-  <button data-p="add" class="on">记一笔</button><button data-p="book">账本</button><button data-p="long">长线</button><button data-p="fix">固定</button>
+  <button data-p="add" class="on">记一笔</button><button data-p="book">账本</button><button data-p="inc">收入</button><button data-p="fix">固定</button>
 </div></nav>
 
 <div class="toast" id="toast"><span id="toastMsg"></span><button id="toastUndo">撤销</button></div>
@@ -281,33 +322,49 @@ dialog::backdrop { background:rgba(29,42,107,.35) }
 <script src="shared.js"></script>
 <script>
 // ---------- model ----------
-const CATS = {
-  life: { name: '生活', c: 'var(--c-life)', hex: '#FF5FA2', hint: '吃饭 穿衣 看病 出行 玩' },
-  home: { name: '住房', c: 'var(--c-home)', hex: '#4FA3FF', hint: '房租 房贷 物业 水电' },
-  ins:  { name: '保险', c: 'var(--c-ins)',  hex: '#A98BEA', hint: '医疗 重疾 意外 寿险' },
-  inv:  { name: '投资', c: 'var(--c-inv)',  hex: '#FFC61A', hint: 'ETF 基金 债券 股票' },
+const OUT = {
+  life: { name: '生活', c: 'var(--c-life)', hint: '吃饭 穿衣 看病 出行 玩' },
+  home: { name: '住房', c: 'var(--c-home)', hint: '房租 房贷 物业 水电' },
+  ins:  { name: '保险', c: 'var(--c-ins)',  hint: '医疗 重疾 意外 寿险' },
+  inv:  { name: '投资', c: 'var(--c-inv)',  hint: 'ETF 基金 债券 股票' },
 };
-const CK = Object.keys(CATS);
+const INC = {
+  salary: { name: '工资', c: 'var(--c-salary)', hint: '到手工资 奖金 补贴' },
+  side:   { name: '副业', c: 'var(--c-side)',   hint: '接单 稿费 兼职 卖货' },
+  yield:  { name: '理财收益', c: 'var(--c-yield)', hint: '分红 利息 卖出赚的' },
+  other:  { name: '其他', c: 'var(--c-other)',  hint: '红包 退款 报销' },
+};
+const CATS = Object.assign({}, OUT, INC);
+const CK = Object.keys(OUT), IK = Object.keys(INC);
+const isIn = (e) => e.cat in INC;
 const SUBS = ['ETF', '基金', '债券', '股票', '存款理财', '其他'];
 const WEEK = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
 const KEY = 'xy-ledger-v1';
 
-let S = load() || { v: 1, entries: [], rules: [], mv: {}, income: null };
+let S = load() || { v: 1, entries: [], rules: [], mv: {} };
 function load() { try { const v = JSON.parse(localStorage.getItem(KEY)); return v && Array.isArray(v.entries) ? v : null; } catch (e) { return null; } }
 function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
 
 const $ = (id) => document.getElementById(id);
+const $$ = (s) => Array.from(document.querySelectorAll(s));
 const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
 const pad = (n) => String(n).padStart(2, '0');
 const ds = (d) => d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
 const pd = (s) => { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); };
 const today = () => ds(new Date());
 const r2 = (n) => Math.round(n * 100) / 100;
-const fmt = (n) => '¥' + r2(n).toLocaleString('zh-CN', { maximumFractionDigits: 2 });
-const fmtK = (n) => n >= 10000 ? '¥' + r2(n / 10000).toLocaleString('zh-CN', { maximumFractionDigits: 2 }) + '万' : fmt(n);
+const fmt = (n) => (n < 0 ? '-¥' : '¥') + Math.abs(r2(n)).toLocaleString('zh-CN', { maximumFractionDigits: 2 });
+const fmtK = (n) => Math.abs(n) >= 10000 ? (n < 0 ? '-¥' : '¥') + r2(Math.abs(n) / 10000).toLocaleString('zh-CN', { maximumFractionDigits: 2 }) + '万' : fmt(n);
+const pct = (a, b) => b ? Math.round((a / b) * 100) + '%' : '—';
 const num = (v) => { const n = parseFloat(String(v).replace(/[^\d.]/g, '')); return isFinite(n) && n > 0 ? r2(n) : null; };
 const esc = (s) => String(s || '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const sumBy = (list) => { const o = { life: 0, home: 0, ins: 0, inv: 0, all: 0 }; list.forEach((e) => { o[e.cat] += e.amt; o.all += e.amt; }); return o; };
+// all = 流出合计（含投资）；spend = 花掉的（生活+住房+保险）；inAll = 收入合计
+function sumBy(list) {
+  const o = { all: 0, inAll: 0 }; Object.keys(CATS).forEach((k) => (o[k] = 0));
+  list.forEach((e) => { if (!(e.cat in CATS)) return; o[e.cat] += e.amt; if (isIn(e)) o.inAll += e.amt; else o.all += e.amt; });
+  o.spend = o.life + o.home + o.ins; return o;
+}
+const monthKeys = (n) => { const r = [], d = pd(today().slice(0, 7) + '-01'); d.setMonth(d.getMonth() - (n - 1)); for (let i = 0; i < n; i++) { r.push(ds(d).slice(0, 7)); d.setMonth(d.getMonth() + 1); } return r; };
 
 // ---------- 固定记录：补记到今天 ----------
 function hits(rule, d) {
@@ -315,10 +372,7 @@ function hits(rule, d) {
   if (rule.freq === 'daily') return true;
   if (rule.freq === 'weekday') return w >= 1 && w <= 5;
   if (rule.freq === 'weekly') return w === +rule.day;
-  if (rule.freq === 'monthly') {
-    const last = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate();
-    return d.getDate() === Math.min(+rule.day, last);
-  }
+  if (rule.freq === 'monthly') { const last = new Date(d.getFullYear(), d.getMonth() + 1, 0).getDate(); return d.getDate() === Math.min(+rule.day, last); }
   return false;
 }
 function runRules() {
@@ -349,8 +403,20 @@ function mood(k, hop) {
 }
 
 // ---------- 记一笔 ----------
-let pickSub = 'ETF', lastAdded = null;
-$('baskets').innerHTML = CK.map((k) => `<button class="basket" data-k="${k}" style="--c:${CATS[k].c}"><b>${CATS[k].name}</b><small>${CATS[k].hint}</small></button>`).join('');
+let addMode = 'out', pickSub = 'ETF', lastAdded = null, invArmed = false;
+function setSeg(seg, m) { seg.querySelectorAll('button').forEach((b) => b.classList.toggle('on', b.dataset.m === m)); }
+function drawBaskets() {
+  const set = addMode === 'in' ? INC : OUT;
+  $('baskets').innerHTML = Object.keys(set).map((k) => `<button class="basket" data-k="${k}" style="--c:${set[k].c}"><b>${set[k].name}</b><small>${set[k].hint}</small></button>`).join('');
+  $('addCard').classList.toggle('in-mode', addMode === 'in');
+  $('amtSign').textContent = addMode === 'in' ? '+¥' : '¥';
+  $('addHint').textContent = addMode === 'in' ? '输入金额，点它从哪来，就记好了' : '输入金额，点一个篮子，就记好了';
+  invArmed = false; $('subs').classList.add('hide');
+}
+$('addSeg').addEventListener('click', (e) => {
+  const b = e.target.closest('button'); if (!b || b.dataset.m === addMode) return;
+  addMode = b.dataset.m; setSeg($('addSeg'), addMode); drawBaskets();
+});
 $('subs').innerHTML = '<span class="small muted" style="align-self:center">投资类型：</span>' + SUBS.map((s) => `<button class="chip${s === pickSub ? ' on' : ''}" data-s="${s}">${s}</button>`).join('');
 $('date').value = today(); $('date').max = today();
 
@@ -363,7 +429,6 @@ $('subs').addEventListener('click', (e) => {
   const b = e.target.closest('.chip'); if (!b) return;
   pickSub = b.dataset.s; $('subs').querySelectorAll('.chip').forEach((c) => c.classList.toggle('on', c === b));
 });
-let invArmed = false;
 $('baskets').addEventListener('click', (e) => {
   const b = e.target.closest('.basket'); if (!b) return;
   const k = b.dataset.k, amt = num($('amt').value);
@@ -376,15 +441,11 @@ $('baskets').addEventListener('click', (e) => {
   }
   const entry = { id: uid(), date: $('date').value || today(), cat: k, amt, note: $('note').value.trim(), sub: k === 'inv' ? pickSub : undefined };
   S.entries.push(entry); save(); lastAdded = entry.id;
-  $('amt').value = ''; $('note').value = ''; resetInv();
-  mood(k === 'inv' ? 'proud' : 'joy', true); setTimeout(() => mood('calm'), 1600);
-  toast(`${CATS[k].name} ${fmt(amt)} 记好了`, true);
+  $('amt').value = ''; $('note').value = ''; drawBaskets();
+  mood(k === 'inv' || k in INC ? 'proud' : 'joy', true); setTimeout(() => mood('calm'), 1600);
+  toast(k in INC ? `收入 ${CATS[k].name} +${fmt(amt)} 记好了` : `${CATS[k].name} ${fmt(amt)} 记好了`, true);
   render();
 });
-function resetInv() {
-  invArmed = false; $('subs').classList.add('hide');
-  const b = $('baskets').querySelector('[data-k=inv]'); b.classList.remove('pick'); b.querySelector('small').textContent = CATS.inv.hint;
-}
 $('amt').addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); toast('点下面一个篮子就能记'); } });
 
 // ---------- toast ----------
@@ -400,97 +461,114 @@ $('toastUndo').addEventListener('click', () => {
 
 // ---------- list rendering ----------
 function itemHTML(e) {
-  const c = CATS[e.cat];
-  const title = e.note || c.name + (e.sub ? ' · ' + e.sub : '');
-  const meta = c.name + (e.sub ? ' · ' + e.sub : '');
-  return `<div class="item" data-id="${e.id}" style="--c:${c.c}"><span class="dot"></span><div class="t"><div>${esc(title)}${e.auto ? '<span class="auto">自动</span>' : ''}</div><small>${esc(meta)}</small></div><span class="a">${fmt(e.amt)}</span></div>`;
+  const c = CATS[e.cat] || { name: '?', c: 'var(--line)' }, inc = isIn(e);
+  const meta = (inc ? '收入 · ' : '') + c.name + (e.sub ? ' · ' + e.sub : '');
+  return `<div class="item${inc ? ' inc' : ''}" data-id="${e.id}" style="--c:${c.c}"><span class="dot"></span><div class="t"><div>${esc(e.note || c.name + (e.sub ? ' · ' + e.sub : ''))}${e.auto ? '<span class="auto">自动</span>' : ''}</div><small>${esc(meta)}</small></div><span class="a">${inc ? '+' : ''}${fmt(e.amt)}</span></div>`;
 }
-function groupByDay(list) {
+function groupByDay(list, limit) {
   const g = {}; list.forEach((e) => (g[e.date] = g[e.date] || []).push(e));
-  return Object.keys(g).sort().reverse().map((d) => {
-    const dt = pd(d), s = g[d].reduce((a, e) => a + e.amt, 0);
-    return `<div class="day"><span>${dt.getMonth() + 1}月${dt.getDate()}日 ${WEEK[dt.getDay()]}</span><span class="num">${fmt(s)}</span></div>` + g[d].map(itemHTML).join('');
-  }).join('');
+  const days = Object.keys(g).sort().reverse();
+  const more = limit && days.length > limit ? `<button class="link" data-more style="display:block;margin:12px auto 0">展开这个月全部 ${days.length} 天</button>` : '';
+  return days.slice(0, limit || days.length).map((d) => {
+    const dt = pd(d), s = sumBy(g[d]);
+    const tot = [s.all ? '出 ' + fmt(s.all) : '', s.inAll ? '入 +' + fmt(s.inAll) : ''].filter(Boolean).join(' · ');
+    return `<div class="day"><span>${dt.getMonth() + 1}月${dt.getDate()}日 ${WEEK[dt.getDay()]}</span><span class="num">${tot}</span></div>` + g[d].map(itemHTML).join('');
+  }).join('') + more;
 }
-document.addEventListener('click', (e) => { const it = e.target.closest('.item'); if (it) openEdit(it.dataset.id); });
+let showAllDays = false;
+document.addEventListener('click', (e) => { if (e.target.closest('[data-more]')) { showAllDays = true; render(); } });
+document.addEventListener('click', (e) => { const it = e.target.closest('.item[data-id]'); if (it) openEdit(it.dataset.id); });
 
-function streak() {
-  const days = new Set(S.entries.filter((e) => !e.auto).map((e) => e.date));
-  return days.size;
-}
-function quad(el, s) {
-  el.innerHTML = CK.map((k) => `<div style="--c:${CATS[k].c}"><small>${CATS[k].name}</small><b class="num">${fmtK(s[k])}</b></div>`).join('');
-}
-function stack(el, s) {
-  el.innerHTML = s.all ? CK.map((k) => `<i style="--c:${CATS[k].c}; width:${(s[k] / s.all) * 100}%"></i>`).join('') : '';
-}
+const streak = () => new Set(S.entries.filter((e) => !e.auto).map((e) => e.date)).size;
+function quad(el, s, keys) { el.innerHTML = keys.map((k) => `<div style="--c:${CATS[k].c}"><small>${CATS[k].name}</small><b class="num">${fmtK(s[k])}</b></div>`).join(''); }
+function stack(el, s, keys, total) { el.innerHTML = total ? keys.map((k) => `<i style="--c:${CATS[k].c}; width:${(s[k] / total) * 100}%"></i>`).join('') : ''; }
 
 let viewMonth = today().slice(0, 7);
 function render() {
   const t = today();
   // 今天
-  const td = S.entries.filter((e) => e.date === t);
-  $('todayTotal').textContent = fmt(td.reduce((a, e) => a + e.amt, 0));
+  const td = S.entries.filter((e) => e.date === t), ts = sumBy(td);
+  $('todayTotal').innerHTML = `出 <b>${fmt(ts.all)}</b>` + (ts.inAll ? ` · 入 <b style="color:var(--in)">+${fmt(ts.inAll)}</b>` : '');
   $('todayList').innerHTML = td.length ? td.slice().reverse().map(itemHTML).join('') : '<div class="empty">今天还没有记录。记一笔就好，不用记全。</div>';
   $('streak').textContent = streak();
 
-  // 账本
+  // 月份（账本和收入共用）
   const [y, m] = viewMonth.split('-').map(Number);
-  $('mTitle').textContent = `${y}年${m}月`;
-  $('mNext').disabled = viewMonth >= t.slice(0, 7); $('mNext').style.opacity = $('mNext').disabled ? .3 : 1;
-  const ml = S.entries.filter((e) => e.date.startsWith(viewMonth));
-  const ms = sumBy(ml);
-  $('mTotal').textContent = fmt(ms.all); stack($('mStack'), ms); quad($('mQuad'), ms);
+  $$('.mTitle').forEach((h) => (h.textContent = `${y}年${m}月`));
+  $$('.month [data-step="1"]').forEach((b) => (b.disabled = viewMonth >= t.slice(0, 7)));
+  const ml = S.entries.filter((e) => e.date.startsWith(viewMonth)), ms = sumBy(ml);
   const daysIn = viewMonth === t.slice(0, 7) ? +t.slice(8) : new Date(y, m, 0).getDate();
-  $('mLine').textContent = ms.all
-    ? `生活钱日均 ${fmt(ms.life / daysIn)}。投资占这个月流出的 ${Math.round((ms.inv / ms.all) * 100)}%。` + (S.income ? ` 收入 ${fmt(S.income)}，结余 ${fmt(S.income - ms.life - ms.home - ms.ins)}（投资不算花掉）。` : '')
-    : '';
-  $('mList').innerHTML = ml.length ? '<div class="card soft">' + groupByDay(ml) + '</div>' : '<div class="card soft"><div class="empty">这个月还空着。</div></div>';
+
+  // 账本
+  $('mTotal').textContent = fmt(ms.all); stack($('mStack'), ms, CK, ms.all); quad($('mQuad'), ms, CK);
+  $('mLine').textContent = ms.all ? `生活钱日均 ${fmt(ms.life / daysIn)}。投资占这个月流出的 ${pct(ms.inv, ms.all)}。` + (ms.inAll ? ` 这个月收入 ${fmt(ms.inAll)}，存下 ${pct(ms.inAll - ms.spend, ms.inAll)}。` : '') : '';
+  const outs = ml.filter((e) => !isIn(e));
+  $('mList').innerHTML = '<div class="card soft">' + (outs.length ? groupByDay(outs, showAllDays ? 0 : 7) : '<div class="empty">这个月还空着。</div>') + '</div>';
+
+  // 收入
+  $('iTotal').textContent = '+' + fmt(ms.inAll); stack($('iStack'), ms, IK, ms.inAll); quad($('iQuad'), ms, IK);
+  const left = ms.inAll - ms.spend - ms.inv;
+  $('iFlow').innerHTML = `<div><small>花掉</small><b class="num">${fmtK(ms.spend)}</b></div><div><small>投进去</small><b class="num">${fmtK(ms.inv)}</b></div><div><small>剩在手里</small><b class="num" style="color:${left < 0 ? 'var(--up)' : 'var(--in)'}">${fmtK(left)}</b></div>`;
+  $('iLine').textContent = ms.inAll
+    ? `收入里 ${pct(ms.spend, ms.inAll)} 花掉了，${pct(ms.inv, ms.inAll)} 变成了投资。` + (left < 0 ? ' 这个月出的比进的多，没关系，看长线。' : '')
+    : '这个月还没记收入。发工资那天记一笔，或者去「固定」设成每月自动记。';
+  const ins = ml.filter(isIn);
+  $('iList').innerHTML = ins.length ? '<div class="card soft">' + groupByDay(ins) + '</div>' : '';
 
   renderLong(); renderRules();
 }
-$('mPrev').addEventListener('click', () => { const d = pd(viewMonth + '-01'); d.setMonth(d.getMonth() - 1); viewMonth = ds(d).slice(0, 7); render(); });
-$('mNext').addEventListener('click', () => { const d = pd(viewMonth + '-01'); d.setMonth(d.getMonth() + 1); viewMonth = ds(d).slice(0, 7); render(); });
+document.addEventListener('click', (e) => {
+  const b = e.target.closest('.month [data-step]'); if (!b || b.disabled) return;
+  const d = pd(viewMonth + '-01'); d.setMonth(d.getMonth() + +b.dataset.step); viewMonth = ds(d).slice(0, 7); showAllDays = false; render();
+});
 
-// ---------- 长线 ----------
+// ---------- 长线（账本页下半 + 收入页图表） ----------
 function renderLong() {
   const t = today(), yr = t.slice(0, 4);
   const all = sumBy(S.entries), ys = sumBy(S.entries.filter((e) => e.date.startsWith(yr)));
   const first = S.entries.reduce((a, e) => (e.date < a ? e.date : a), t);
   const months = Math.max(1, (pd(t) - pd(first)) / (86400000 * 30.44));
-  const spend = ys.life + ys.home + ys.ins;
-  const rows = [
-    [`${yr} 年 生活`, fmtK(ys.life)], [`${yr} 年 住房`, fmtK(ys.home)], [`${yr} 年 保险`, fmtK(ys.ins)],
-    [`${yr} 年 投进去的钱`, fmtK(ys.inv)],
-    ['今年投资占比', ys.all ? Math.round((ys.inv / ys.all) * 100) + '%' : '—'],
-    ['平均每月生活钱', fmtK(all.life / months)],
-    ['住房占“花掉的钱”', spend ? Math.round((ys.home / spend) * 100) + '%' : '—'],
-    ['开始记账以来累计投入', fmtK(all.inv)],
-  ];
-  $('lKv').innerHTML = rows.map(([a, b]) => `<span>${a}</span><b>${b}</b>`).join('');
+  $('lKv').innerHTML = [
+    [`${yr} 年 生活`, fmtK(ys.life)], [`${yr} 年 住房`, fmtK(ys.home)], [`${yr} 年 保险`, fmtK(ys.ins)], [`${yr} 年 投进去的钱`, fmtK(ys.inv)],
+    ['今年投资占流出', pct(ys.inv, ys.all)], ['平均每月生活钱', fmtK(all.life / months)],
+    ['住房占“花掉的钱”', pct(ys.home, ys.spend)], ['开始记账以来累计投入', fmtK(all.inv)],
+  ].map(([a, b]) => `<span>${a}</span><b>${b}</b>`).join('');
 
-  // 12 个月柱状
-  const ms = []; const d = pd(t.slice(0, 7) + '-01'); d.setMonth(d.getMonth() - 11);
-  for (let i = 0; i < 12; i++) { const k = ds(d).slice(0, 7); ms.push([k, sumBy(S.entries.filter((e) => e.date.startsWith(k)))]); d.setMonth(d.getMonth() + 1); }
-  const max = Math.max(1, ...ms.map(([, s]) => s.all));
-  $('lBars').innerHTML = ms.map(([k, s]) => `<div class="col" title="${k} ${fmt(s.all)}" style="height:${(s.all / max) * 100}%">${CK.map((c) => s[c] ? `<i style="--c:${CATS[c].c}; flex:${s[c]}"></i>` : '').join('')}</div>`).join('');
-  $('lBars').querySelectorAll('.col').forEach((c) => (c.style.display = 'flex'));
-  $('lX').innerHTML = ms.map(([k]) => `<span>${+k.slice(5)}</span>`).join('');
+  const mk = monthKeys(12), mss = mk.map((k) => sumBy(S.entries.filter((e) => e.date.startsWith(k))));
+  $$('.lX').forEach((x) => (x.innerHTML = mk.map((k) => `<span>${+k.slice(5)}</span>`).join('')));
+  // 流出：分色堆叠
+  const max = Math.max(1, ...mss.map((s) => s.all));
+  $('lBars').innerHTML = mss.map((s, i) => `<div class="col" title="${mk[i]} ${fmt(s.all)}" style="height:${(s.all / max) * 100}%">${CK.map((c) => s[c] ? `<i style="--c:${CATS[c].c}; flex:${s[c]}"></i>` : '').join('')}</div>`).join('');
   $('lLegend').innerHTML = CK.map((k) => `<span><i style="--c:${CATS[k].c}"></i>${CATS[k].name}</span>`).join('');
+  // 进与出：三根并排
+  const max2 = Math.max(1, ...mss.map((s) => Math.max(s.inAll, s.spend, s.inv)));
+  const h = (v) => (v / max2) * 100 + '%';
+  $('iBars').innerHTML = mss.map((s, i) => `<div class="pair" title="${mk[i]} 入${fmt(s.inAll)} 花${fmt(s.spend)} 投${fmt(s.inv)}"><i style="--c:var(--in);height:${h(s.inAll)}"></i><i style="--c:var(--c-life);height:${h(s.spend)}"></i><i style="--c:var(--c-inv);height:${h(s.inv)}"></i></div>`).join('');
+
+  // 今年收入
+  // 从今年第一笔收入那个月算起，避免刚开始记账时被前面空着的月份拉低
+  const firstIn = S.entries.filter((e) => isIn(e) && e.date.startsWith(yr)).reduce((a, e) => (e.date < a ? e.date : a), t);
+  const inMonths = +t.slice(5, 7) - +firstIn.slice(5, 7) + 1;
+  $('iKv').innerHTML = [
+    [`${yr} 年 收入`, fmtK(ys.inAll)], ['平均每月收入', fmtK(ys.inAll / inMonths)],
+    ...IK.filter((k) => ys[k]).map((k) => [`　${INC[k].name}`, fmtK(ys[k])]),
+    ['今年存下比例', ys.inAll ? pct(ys.inAll - ys.spend, ys.inAll) : '—'],
+    ['今年收入变成投资', ys.inAll ? pct(ys.inv, ys.inAll) : '—'],
+    ['理财收益 ÷ 累计投入', all.inv ? (((all.yield || 0) / all.inv) * 100).toFixed(1) + '%' : '—'],
+  ].map(([a, b]) => `<span>${a}</span><b>${b}</b>`).join('');
 
   // 持仓
   const p = {}; S.entries.filter((e) => e.cat === 'inv').forEach((e) => { const s = e.sub || '其他'; p[s] = (p[s] || 0) + e.amt; });
   const keys = SUBS.filter((s) => p[s]);
   if (!keys.length) { $('hold').innerHTML = '<tr><td class="empty">还没有投资记录。</td></tr>'; return; }
   let tp = 0, tv = 0, hasAll = true;
+  const plCell = (pl, base, bold) => `<td class="r ${pl > 0 ? 'pos' : pl < 0 ? 'neg' : ''}">${pl == null ? '—' : (bold ? '<b>' : '') + (pl > 0 ? '+' : '') + fmt(pl) + (bold ? '</b>' : `<br><small>${((pl / base) * 100).toFixed(1)}%</small>`)}</td>`;
   const body = keys.map((s) => {
     const v = S.mv[s]; tp += p[s]; if (v != null) tv += v; else hasAll = false;
-    const pl = v != null ? v - p[s] : null;
-    return `<tr><td>${s}</td><td class="r">${fmt(p[s])}</td><td class="r"><input class="mv" data-s="${s}" inputmode="decimal" placeholder="—" value="${v != null ? v : ''}"></td><td class="r ${pl > 0 ? 'pos' : pl < 0 ? 'neg' : ''}">${pl == null ? '—' : (pl > 0 ? '+' : '') + fmt(pl).replace('¥-', '-¥') + `<br><small>${((pl / p[s]) * 100).toFixed(1)}%</small>`}</td></tr>`;
+    return `<tr><td>${s}</td><td class="r">${fmt(p[s])}</td><td class="r"><input class="mv" data-s="${s}" inputmode="decimal" placeholder="—" value="${v != null ? v : ''}"></td>${plCell(v != null ? v - p[s] : null, p[s])}</tr>`;
   }).join('');
-  const tpl = hasAll ? tv - tp : null;
   $('hold').innerHTML = `<tr><th>类型</th><th class="r">累计投入</th><th class="r">现在值</th><th class="r">浮盈亏</th></tr>${body}` +
-    `<tr><td><b>合计</b></td><td class="r"><b>${fmt(tp)}</b></td><td class="r"><b>${hasAll ? fmt(tv) : '—'}</b></td><td class="r ${tpl > 0 ? 'pos' : tpl < 0 ? 'neg' : ''}"><b>${tpl == null ? '—' : (tpl > 0 ? '+' : '') + fmt(tpl).replace('¥-', '-¥')}</b></td></tr>`;
+    `<tr><td><b>合计</b></td><td class="r"><b>${fmt(tp)}</b></td><td class="r"><b>${hasAll ? fmt(tv) : '—'}</b></td>${plCell(hasAll ? tv - tp : null, tp, true)}</tr>`;
 }
 $('hold').addEventListener('change', (e) => {
   const i = e.target.closest('.mv'); if (!i) return;
@@ -499,38 +577,52 @@ $('hold').addEventListener('change', (e) => {
 });
 
 // ---------- 固定记录 UI ----------
-const catOpts = CK.map((k) => `<option value="${k}">${CATS[k].name}</option>`).join('');
-const subOpts = SUBS.map((s) => `<option>${s}</option>`).join('');
-$('rCat').innerHTML = catOpts; $('rCat').value = 'inv'; $('rSub').innerHTML = subOpts; $('rStart').value = today();
-$('eCat').innerHTML = catOpts; $('eSub').innerHTML = subOpts;
+const opts = (set) => Object.keys(set).map((k) => `<option value="${k}">${set[k].name}</option>`).join('');
+let ruleMode = 'out';
+$('rSub').innerHTML = SUBS.map((s) => `<option>${s}</option>`).join(''); $('rStart').value = today();
+$('eCat').innerHTML = `<optgroup label="支出">${opts(OUT)}</optgroup><optgroup label="收入">${opts(INC)}</optgroup>`;
+$('eSub').innerHTML = $('rSub').innerHTML;
+function setRuleMode(m) {
+  ruleMode = m; setSeg($('ruleSeg'), m);
+  $('rCat').innerHTML = opts(m === 'in' ? INC : OUT); $('rCat').value = m === 'in' ? 'salary' : 'inv';
+  $('rCatLabel').textContent = m === 'in' ? '从哪来' : '放进哪个篮子';
+  $('rName').placeholder = m === 'in' ? '例：每月工资' : '例：沪深300 ETF 定投';
+  $('rAmt').placeholder = m === 'in' ? '8000' : '30';
+  if (m === 'in') { $('rFreq').value = 'monthly'; } else { $('rFreq').value = 'daily'; }
+  syncRuleForm(); if (m === 'in') $('rDay').value = '10';
+}
+$('ruleSeg').addEventListener('click', (e) => { const b = e.target.closest('button'); if (b && b.dataset.m !== ruleMode) setRuleMode(b.dataset.m); });
 function syncRuleForm() {
   $('rSubWrap').classList.toggle('hide', $('rCat').value !== 'inv');
   const f = $('rFreq').value; $('rDayWrap').classList.toggle('hide', f !== 'weekly' && f !== 'monthly');
-  if (f === 'weekly') $('rDay').innerHTML = WEEK.map((w, i) => `<option value="${i}">${w}</option>`).join('');
-  if (f === 'monthly') $('rDay').innerHTML = Array.from({ length: 31 }, (_, i) => `<option value="${i + 1}">${i + 1} 号</option>`).join('');
+  const want = f === 'weekly' ? 'w' : f === 'monthly' ? 'm' : '';
+  if (want && $('rDay').dataset.k !== want) {
+    $('rDay').dataset.k = want;
+    $('rDay').innerHTML = want === 'w' ? WEEK.map((w, i) => `<option value="${i}">${w}</option>`).join('') : Array.from({ length: 31 }, (_, i) => `<option value="${i + 1}">${i + 1} 号</option>`).join('');
+  }
 }
-$('rCat').addEventListener('change', syncRuleForm); $('rFreq').addEventListener('change', syncRuleForm); syncRuleForm();
-function freqText(r) {
-  return { daily: '每天', weekday: '工作日', weekly: '每' + WEEK[r.day], monthly: '每月 ' + r.day + ' 号' }[r.freq];
-}
+$('rCat').addEventListener('change', syncRuleForm); $('rFreq').addEventListener('change', syncRuleForm); setRuleMode('out');
+const freqText = (r) => ({ daily: '每天', weekday: '工作日', weekly: '每' + WEEK[r.day], monthly: '每月 ' + r.day + ' 号' }[r.freq]);
 $('ruleForm').addEventListener('submit', (e) => {
   e.preventDefault(); const f = new FormData(e.target); const amt = num(f.get('amt'));
   if (!amt) { toast('金额填一个大于 0 的数'); return; }
-  const start = f.get('start') || today();
-  const prev = pd(start); prev.setDate(prev.getDate() - 1);
+  const start = f.get('start') || today(); const prev = pd(start); prev.setDate(prev.getDate() - 1);
   S.rules.push({ id: uid(), name: f.get('name').trim(), amt, cat: f.get('cat'), sub: f.get('cat') === 'inv' ? f.get('sub') : undefined,
     freq: f.get('freq'), day: f.get('day'), start, lastRun: ds(prev), on: true });
-  const n = runRules(); save(); e.target.reset(); $('rCat').value = 'inv'; $('rStart').value = today(); syncRuleForm(); render();
+  const n = runRules(); save(); e.target.reset(); $('rStart').value = today(); setRuleMode(ruleMode); render();
   toast(n ? `加好了，已补记 ${n} 笔` : '加好了，到日子会自动记'); mood('proud', true); setTimeout(() => mood('calm'), 1600);
 });
+function ruleHTML(r) {
+  const inc = r.cat in INC, total = S.entries.filter((e) => e.auto === r.id).reduce((a, e) => a + e.amt, 0);
+  return `<div class="rule${r.on ? '' : ' off'}${inc ? ' inc' : ''}" style="--c:${CATS[r.cat].c}"><span class="dot"></span>
+    <div class="t"><b>${esc(r.name)}</b> <span class="num">${inc ? '+' : ''}${fmt(r.amt)}</span><small>${freqText(r)} · ${inc ? '收入 · ' : ''}${CATS[r.cat].name}${r.sub ? ' · ' + r.sub : ''} · 已累计 ${fmt(total)}</small></div>
+    <button class="switch${r.on ? ' on' : ''}" data-tog="${r.id}" aria-label="暂停或继续"></button>
+    <button class="link" data-del="${r.id}">删</button></div>`;
+}
 function renderRules() {
-  $('rules').innerHTML = S.rules.length ? S.rules.map((r) => {
-    const total = S.entries.filter((e) => e.auto === r.id).reduce((a, e) => a + e.amt, 0);
-    return `<div class="rule${r.on ? '' : ' off'}" style="--c:${CATS[r.cat].c}"><span class="item" style="padding:0;border:0;cursor:default"><span class="dot"></span></span>
-      <div class="t"><b>${esc(r.name)}</b> <span class="num">${fmt(r.amt)}</span><small>${freqText(r)} · ${CATS[r.cat].name}${r.sub ? ' · ' + r.sub : ''} · 已累计 ${fmt(total)}</small></div>
-      <button class="switch${r.on ? ' on' : ''}" data-tog="${r.id}" aria-label="暂停或继续"></button>
-      <button class="link" data-del="${r.id}">删</button></div>`;
-  }).join('') : '<div class="empty">还没有。比如：每天 30 元定投 ETF。</div>';
+  const outR = S.rules.filter((r) => !(r.cat in INC)), inR = S.rules.filter((r) => r.cat in INC);
+  $('rules').innerHTML = !S.rules.length ? '<div class="empty">还没有。比如：每天 30 元定投 ETF，每月 10 号发工资。</div>'
+    : (outR.length ? '<h3 class="rh">支出</h3>' + outR.map(ruleHTML).join('') : '') + (inR.length ? '<h3 class="rh">收入</h3>' + inR.map(ruleHTML).join('') : '');
 }
 $('rules').addEventListener('click', (e) => {
   const tg = e.target.closest('[data-tog]'), dl = e.target.closest('[data-del]');
@@ -556,17 +648,15 @@ $('edit').addEventListener('close', () => {
   editing = null; save(); render();
 });
 
-// ---------- 设置 / 数据 ----------
-$('income').value = S.income || '';
-$('income').addEventListener('change', () => { S.income = num($('income').value); save(); render(); });
+// ---------- 数据 ----------
 function download(name, text, type) {
   const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([text], { type })); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
 }
 $('expJson').addEventListener('click', () => download(`小Y记账备份-${today()}.json`, JSON.stringify(S, null, 1), 'application/json'));
 $('expCsv').addEventListener('click', () => {
   const q = (s) => '"' + String(s == null ? '' : s).replace(/"/g, '""') + '"';
-  const rows = [['日期', '篮子', '金额', '投资类型', '备注', '自动'].join(',')].concat(
-    S.entries.slice().sort((a, b) => a.date.localeCompare(b.date)).map((e) => [e.date, CATS[e.cat].name, e.amt, e.sub || '', q(e.note), e.auto ? '是' : ''].join(',')));
+  const rows = [['日期', '收支', '分类', '金额', '投资类型', '备注', '自动'].join(',')].concat(
+    S.entries.slice().sort((a, b) => a.date.localeCompare(b.date)).map((e) => [e.date, isIn(e) ? '收入' : '支出', (CATS[e.cat] || {}).name, e.amt, e.sub || '', q(e.note), e.auto ? '是' : ''].join(',')));
   download(`小Y记账-${today()}.csv`, '﻿' + rows.join('\n'), 'text/csv');
 });
 $('impBtn').addEventListener('click', () => $('impFile').click());
@@ -576,29 +666,26 @@ $('impFile').addEventListener('change', async (e) => {
     const v = JSON.parse(await file.text());
     if (!v || !Array.isArray(v.entries)) throw 0;
     if (!confirm(`备份里有 ${v.entries.length} 笔记录。用它替换现在的账本吗？`)) return;
-    S = Object.assign({ v: 1, entries: [], rules: [], mv: {}, income: null }, v); save(); runRules(); $('income').value = S.income || ''; render(); toast('恢复好了');
+    S = Object.assign({ v: 1, entries: [], rules: [], mv: {} }, v); save(); runRules(); render(); toast('恢复好了');
   } catch (err) { toast('这个文件读不出来'); }
   e.target.value = '';
 });
 
 // ---------- tabs ----------
-document.querySelectorAll('nav.tabs button').forEach((b) => b.addEventListener('click', () => {
-  document.querySelectorAll('nav.tabs button').forEach((x) => x.classList.toggle('on', x === b));
-  ['add', 'book', 'long', 'fix'].forEach((p) => $('p-' + p).classList.toggle('hide', p !== b.dataset.p));
+$$('nav.tabs button').forEach((b) => b.addEventListener('click', () => {
+  $$('nav.tabs button').forEach((x) => x.classList.toggle('on', x === b));
+  ['add', 'book', 'inc', 'fix'].forEach((p) => $('p-' + p).classList.toggle('hide', p !== b.dataset.p));
   window.scrollTo(0, 0);
 }));
 
 // ---------- start ----------
 const hr = new Date().getHours();
 $('hello').textContent = (hr < 11 ? '早，' : hr < 18 ? '下午好，' : '晚上好，') + '记一笔就好。';
-mood('calm');
+mood('calm'); drawBaskets();
 const auto = runRules(); render();
 if (auto) setTimeout(() => toast(`固定记录自动补了 ${auto} 笔`), 400);
-// 跨过午夜还开着页面：回到前台时补记
 document.addEventListener('visibilitychange', () => { if (!document.hidden) { $('date').max = today(); if (runRules()) render(); } });
-// 装到桌面 + 断网也能用
 if ('serviceWorker' in navigator && location.protocol !== 'file:') navigator.serviceWorker.register('sw.js').catch(() => {});
-// 请浏览器别在空间紧张时清掉账本
 if (navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(() => {});
 </script>
 </body>
